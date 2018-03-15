@@ -8,7 +8,7 @@
 #include "Components/InputComponent.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
-#include "GameFramework/PlayerController.h"
+
 
 
 #define OUT

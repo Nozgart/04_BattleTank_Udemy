@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
 class ATank;
@@ -39,5 +40,5 @@ private:
 	float CrossHairYLocation = 0.333333f;
 
 	UPROPERTY(EditAnywhere)
-	float LineTraceRange = 10000000.f;
+	float LineTraceRange = 100000000.f;
 };

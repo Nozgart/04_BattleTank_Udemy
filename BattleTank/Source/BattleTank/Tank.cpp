@@ -12,6 +12,11 @@ ATank::ATank()
 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 }
+
+void ATank::Fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("fire"))
+}
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
@@ -33,5 +38,10 @@ void  ATank::AimAt(FVector HitLocation)
 void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+}
+
+void ATank::SetTurretReference(UTankTurret * TurretToSet)
+{
+	TankAimingComponent->SetTurretReference(TurretToSet);
 }
 

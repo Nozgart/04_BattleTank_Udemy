@@ -2,6 +2,7 @@
 
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
@@ -13,7 +14,7 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -35,13 +36,18 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
+	if (!BarrelToSet) { return; }
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
+{
+	if (!TurretToSet) { return; }
+	Turret = TurretToSet;
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 {
-	if (!Barrel) { return; }
-
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 
@@ -59,14 +65,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 	))
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-		MoveBarrelTowards(AimDirection);
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("time %f, aim found %s"), Time, *(GetOwner()->GetName()));
+
+		MoveBarrelAndTurretTowards(AimDirection);
 	}
 	else
 	{
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("time %f, no aim found %s"), Time, *(GetOwner()->GetName()));
 	}
 	//auto OurTankName = GetOwner()->GetName();
 	//auto BarrelLocation = Barrel->GetComponentLocation();
@@ -74,14 +77,16 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 	//UE_LOG(LogTemp, Warning, TEXT("%s is aiming at %s to %s"), *OurTankName, *(BarrelLocation.ToString()), *(HitLocation.ToString()));
 }
 
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+void UTankAimingComponent::MoveBarrelAndTurretTowards(FVector AimDirection)
 {
 	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
-	auto DeltaRotator = AimAsRotator - BarrelRotation;
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *(DeltaRotator.ToString()));
 
-	Barrel->Elevate(5);
+	auto DeltaRotator = AimAsRotator - BarrelRotation;
+
+	Barrel->Elevate(DeltaRotator.Pitch);
+
+	Turret->Rotate(DeltaRotator.Yaw);
 }
 
 
