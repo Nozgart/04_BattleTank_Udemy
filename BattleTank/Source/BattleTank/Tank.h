@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
+class UTankMovementComponent;
 class UTankBarrel;
 class UTankAimingComponent;
 class UTankTurret;
@@ -40,6 +41,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 	
 private:
 	// Called to bind functionality to input
