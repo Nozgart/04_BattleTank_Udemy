@@ -34,15 +34,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
+void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
 {
-	if (!BarrelToSet) { return; }
+	if (!BarrelToSet) { UE_LOG(LogTemp, Error, TEXT("????????????????????????")) return; }
 	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
-{
-	if (!TurretToSet) { return; }
+	if (!TurretToSet) { UE_LOG(LogTemp, Error, TEXT("!!!!!!!!!!!!!!!!!!!!!!!!")) return; }
 	Turret = TurretToSet;
 }
 
@@ -71,14 +67,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 	else
 	{
 	}
-	//auto OurTankName = GetOwner()->GetName();
-	//auto BarrelLocation = Barrel->GetComponentLocation();
-	//UE_LOG(LogTemp, Warning, TEXT("Shoot at %f speed"), LaunchSpeed);
-	//UE_LOG(LogTemp, Warning, TEXT("%s is aiming at %s to %s"), *OurTankName, *(BarrelLocation.ToString()), *(HitLocation.ToString()));
 }
 
 void UTankAimingComponent::MoveBarrelAndTurretTowards(FVector AimDirection)
 {
+	if (!Barrel || !Turret) { return; }
 	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 

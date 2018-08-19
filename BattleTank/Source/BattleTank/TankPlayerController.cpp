@@ -2,6 +2,7 @@
 
 #include "TankPlayerController.h"
 #include "Tank.h"
+#include "TankAimingComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "Public/DrawDebugHelpers.h "
@@ -17,6 +18,16 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (AimingComponent)
+	{
+		FoundAimingComponent(AimingComponent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AimingComponent missing"));
+	}
+
 	auto TankPawn = GetControlledTank();
 
 	if (!TankPawn)

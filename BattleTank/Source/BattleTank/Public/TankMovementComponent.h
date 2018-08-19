@@ -7,6 +7,7 @@
 #include "TankMovementComponent.generated.h"
 
 class UTankTrack;
+
 /**
  * 
  */
@@ -17,18 +18,18 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 
 public:
 
-		UFUNCTION(BlueprintCallable, Category = CustomMoving)
+		UFUNCTION(BlueprintCallable, Category = "CustomMoving")
 		void IntendMoveForward(float Throw);
 
-		UFUNCTION(BlueprintCallable, Category = CustomMoving)
+		UFUNCTION(BlueprintCallable, Category = "CustomMoving")
 		void IntendTurnRight(float Throw);
 
-		UFUNCTION(BlueprintCallable, Category = Setup)
+		UFUNCTION(BlueprintCallable, Category = "Setup")
 		void Initialise(UTankTrack* LeftToSet, UTankTrack* RightToSet);
 
-		virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
-
 private:
+
+	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 
 	UTankTrack* LeftTrack = nullptr;
 	UTankTrack* RightTrack = nullptr;
