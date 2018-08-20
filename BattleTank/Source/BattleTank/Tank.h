@@ -6,7 +6,6 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
-class UTankMovementComponent;
 class UTankBarrel;
 class UTankAimingComponent;
 class UTankTurret;
@@ -36,9 +35,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent = nullptr;
-
-	UPROPERTY(BlueprintReadOnly)
-	UTankMovementComponent* TankMovementComponent = nullptr;
 	
 private:
 

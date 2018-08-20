@@ -3,7 +3,6 @@
 #include "Tank.h"
 #include "TankTrack.h"
 #include "TankBarrel.h"
-#include "TankMovementComponent.h"
 #include "Projectile.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
@@ -27,13 +26,12 @@ void ATank::BeginPlay()
 
 void  ATank::AimAt(FVector HitLocation)
 {
-	if (TankAimingComponent)
+	if (ensure(TankAimingComponent))
 	{
 		TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("TankAimingComponent is missing"))
 		return;
 	}
 }
@@ -42,7 +40,9 @@ void ATank::Fire()
 {
 	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 	
-	if (Barrel && IsReloaded)
+	if (!ensure(Barrel)) { return; }
+
+	if (IsReloaded)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("fire"))
 		FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));

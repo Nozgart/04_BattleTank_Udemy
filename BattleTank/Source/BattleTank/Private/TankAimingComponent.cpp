@@ -22,23 +22,20 @@ UTankAimingComponent::UTankAimingComponent()
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
-	
 }
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	// ...
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
 {
-	if (!BarrelToSet) { UE_LOG(LogTemp, Error, TEXT("????????????????????????")) return; }
+	if (!ensure(BarrelToSet)) {  return; }
 	Barrel = BarrelToSet;
-	if (!TurretToSet) { UE_LOG(LogTemp, Error, TEXT("!!!!!!!!!!!!!!!!!!!!!!!!")) return; }
+	if (!ensure(TurretToSet)) { return; }
 	Turret = TurretToSet;
 }
 
@@ -71,7 +68,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 
 void UTankAimingComponent::MoveBarrelAndTurretTowards(FVector AimDirection)
 {
-	if (!Barrel || !Turret) { return; }
+	if (!ensure(Barrel || !Turret)) { return; }
 	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 
