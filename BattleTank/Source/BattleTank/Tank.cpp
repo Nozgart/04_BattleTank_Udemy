@@ -6,8 +6,6 @@
 #include "Projectile.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "TankAimingComponent.h"
-
 
 // Sets default values
 ATank::ATank()
@@ -22,18 +20,6 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Warning, TEXT("C++ BEGIN PLAY"))
-}
-
-void  ATank::AimAt(FVector HitLocation)
-{
-	if (ensure(TankAimingComponent))
-	{
-		TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-	}
-	else
-	{
-		return;
-	}
 }
 
 void ATank::Fire()

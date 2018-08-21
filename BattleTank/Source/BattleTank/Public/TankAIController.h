@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
 /**
  * 
  */
@@ -25,4 +25,9 @@ public:
 
 private:
 
+	APawn* PlayerTank = nullptr;
+
+	APawn* ControlledTank = nullptr;
+
+	UTankAimingComponent* AimingComponent = nullptr;
 };
