@@ -1,9 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankTrack.h"
-#include "TankBarrel.h"
-#include "Projectile.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 
@@ -22,25 +19,3 @@ void ATank::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("C++ BEGIN PLAY"))
 }
 
-void ATank::Fire()
-{
-	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-	
-	if (!ensure(Barrel)) { return; }
-
-	if (IsReloaded)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("fire"))
-		FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-		FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
-
-		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBluePrint, StartLocation, StartRotation);
-
-		if (Projectile)
-		{
-			Projectile->LaunchProjectile(LaunchSpeed);
-
-			LastFireTime = FPlatformTime::Seconds();
-		}
-	}
-}
