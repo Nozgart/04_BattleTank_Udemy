@@ -31,7 +31,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// ...
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	if (RoundsLeft <= 0)
+	{
+	FiringState = EFiringState::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringState = EFiringState::Reloading;
 	}
@@ -43,6 +47,16 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	{
 		FiringState = EFiringState::Aiming;
 	}
+}
+
+EFiringState UTankAimingComponent::GetFiringState()
+{
+	return FiringState;
+}
+
+int UTankAimingComponent::GetRoundsLeft() const
+{
+	return RoundsLeft;
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
@@ -99,29 +113,38 @@ void UTankAimingComponent::MoveBarrelAndTurretTowards(FVector AimDirection)
 
 	Barrel->Elevate(DeltaRotator.Pitch);
 
-	Turret->Rotate(DeltaRotator.Yaw);
+	if (DeltaRotator.Yaw > 180.f)
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
 }
 
 void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel)) { return; }
 
-	if (FiringState != EFiringState::Reloading)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("fire"))
+	UE_LOG(LogTemp, Warning, TEXT("numofshoots %i"), RoundsLeft)
 
-		if (!ensure(ProjectileBluePrint)) { return; }
-
-		FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-		FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
-
-		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBluePrint, StartLocation, StartRotation);
-
-		if (Projectile)
+		if (FiringState == EFiringState::Aiming || FiringState == EFiringState::Locked)
 		{
-			Projectile->LaunchProjectile(LaunchSpeed);
+			if (!ensure(ProjectileBluePrint)) { return; }
 
-			LastFireTime = FPlatformTime::Seconds();
+			FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+			FRotator StartRotation = Barrel->GetSocketRotation(FName("Projectile"));
+
+			auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBluePrint, StartLocation, StartRotation);
+
+			if (Projectile)
+			{
+				Projectile->LaunchProjectile(LaunchSpeed);
+
+				LastFireTime = FPlatformTime::Seconds();
+
+			}
+			RoundsLeft--;
 		}
-	}
 }
