@@ -54,7 +54,7 @@ EFiringState UTankAimingComponent::GetFiringState()
 	return FiringState;
 }
 
-int UTankAimingComponent::GetRoundsLeft() const
+int32 UTankAimingComponent::GetRoundsLeft() const
 {
 	return RoundsLeft;
 }
@@ -126,8 +126,6 @@ void UTankAimingComponent::MoveBarrelAndTurretTowards(FVector AimDirection)
 void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel)) { return; }
-
-	UE_LOG(LogTemp, Warning, TEXT("numofshoots %i"), RoundsLeft)
 
 		if (FiringState == EFiringState::Aiming || FiringState == EFiringState::Locked)
 		{
