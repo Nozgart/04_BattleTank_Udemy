@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Projectile.h"
+#include "Engine/World.h"
+#include "Public/TimerManager.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "Components/StaticMeshComponent.h"
 class ATank;
 // Sets default values
@@ -25,6 +28,9 @@ AProjectile::AProjectile()
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Projectile Movement"));
 	ProjectileMovement->bAutoActivate = false;
+
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion Force"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 
@@ -39,7 +45,18 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
 //	this->Destroy();
+
+	FTimerHandle Timer;
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
+}
+
+void AProjectile::OnTimerExpire()
+{
+	Destroy();
 }
 
 // Called every frame

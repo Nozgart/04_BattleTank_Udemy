@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = "Fire")
-	float AcceptanceRadius = 80000.f;
+	float AcceptanceRadius = 8000.f;
 
 private:
 
