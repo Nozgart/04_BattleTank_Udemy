@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "GameFramework/Actor.h"
+#include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
 
 // Sets default values
@@ -16,6 +17,13 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHealth = StartHealth;
 	UE_LOG(LogTemp, Warning, TEXT("C++ BEGIN PLAY"))
 }
 
+float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor* DamageCauser)
+{
+	CurrentHealth = CurrentHealth - FMath::Clamp(FGenericPlatformMath::RoundToInt(DamageAmount), int32(0), CurrentHealth);
+	UE_LOG(LogTemp, Warning, TEXT("%i"), CurrentHealth)
+	return DamageAmount;
+}
