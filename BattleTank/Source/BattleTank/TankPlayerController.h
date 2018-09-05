@@ -27,6 +27,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
+
 private:
 
 	UTankAimingComponent* AimingComponent = nullptr;
@@ -47,4 +48,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 100000000.f;
+
+	UFUNCTION()
+	void OnTankDeath();
+
+	virtual void SetPawn(APawn* InPawn) override;
 };

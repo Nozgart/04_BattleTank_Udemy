@@ -31,4 +31,11 @@ private:
 	APawn* ControlledTank = nullptr;
 
 	UTankAimingComponent* AimingComponent = nullptr;
+
+	virtual void SetPawn(APawn* InPawn) override;
+	
+
+
+	UFUNCTION()
+	void OnTankDeath();
 };
