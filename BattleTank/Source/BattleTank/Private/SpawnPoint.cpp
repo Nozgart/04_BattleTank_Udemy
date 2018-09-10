@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpawnPoint.h"
+#include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
@@ -21,9 +23,12 @@ void USpawnPoint::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	auto NewActor = GetWorld()->SpawnActor<AActor>(ActorToSpawn);
+	auto NewActor = GetWorld()->SpawnActorDeferred<AActor>(ActorToSpawn, this->GetComponentTransform());
 	if (!NewActor) { return; }
-	NewActor->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+	NewActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+	UGameplayStatics::FinishSpawningActor(NewActor, this->GetComponentTransform());
+	
 }
 
 

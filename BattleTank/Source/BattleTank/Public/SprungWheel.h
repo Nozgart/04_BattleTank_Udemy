@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SprungWheel.generated.h"
 
-class UStaticMeshComponent;
+class USphereComponent;
 class UPhysicsConstraintComponent;
 
 UCLASS()
@@ -22,6 +22,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void SetupConstraint();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,12 +31,16 @@ public:
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Setup")
-		UStaticMeshComponent * Wheel;
-
+		USphereComponent * Wheel;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Setup")
-		UStaticMeshComponent * Mass;
+		USphereComponent * Axie;
 
 	UPROPERTY(VisibleAnywhere, Category = "Setup")
 		UPhysicsConstraintComponent * Constraint;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Setup")
+		UPhysicsConstraintComponent * WheelConstraint;
+
 	
 };

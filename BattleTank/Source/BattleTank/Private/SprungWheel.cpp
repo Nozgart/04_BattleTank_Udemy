@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SprungWheel.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 // Sets default values
@@ -12,14 +12,15 @@ ASprungWheel::ASprungWheel()
 
 	Constraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Constraint"));
 	SetRootComponent(Constraint);
-	
-	Mass = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mass"));
-	Mass->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	Axie = CreateDefaultSubobject<USphereComponent>(FName("Axie"));
+	Axie->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	Wheel = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel"));
-	Wheel->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	Wheel = CreateDefaultSubobject<USphereComponent>(FName("Wheel"));
+	Wheel->AttachToComponent(Axie, FAttachmentTransformRules::KeepRelativeTransform);
 
+	WheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("WheelConstraint"));
+	WheelConstraint->AttachToComponent(Axie, FAttachmentTransformRules::KeepRelativeTransform);
 
 }
 
@@ -28,10 +29,18 @@ void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GetAttachParentActor())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NotNULL %s"), *GetAttachParentActor()->GetName());
-	}
+	SetupConstraint();
+	
+}
+
+void ASprungWheel::SetupConstraint()
+{
+	if (!GetAttachParentActor()) { return; }
+	UPrimitiveComponent* Root = Cast<UPrimitiveComponent>(GetAttachParentActor()->GetRootComponent());
+	if (!Root) { return; }
+	Constraint->SetConstrainedComponents(Root, NAME_None, Cast<UPrimitiveComponent>(Wheel), NAME_None);
+	WheelConstraint->SetConstrainedComponents(Root, NAME_None, Cast<UPrimitiveComponent>(Axie), NAME_None);
+	UE_LOG(LogTemp, Warning, TEXT("NotNULL %s"), *GetAttachParentActor()->GetName());
 }
 
 // Called every frame
