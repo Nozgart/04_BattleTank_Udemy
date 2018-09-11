@@ -38,9 +38,9 @@ void ASprungWheel::SetupConstraint()
 	if (!GetAttachParentActor()) { return; }
 	UPrimitiveComponent* Root = Cast<UPrimitiveComponent>(GetAttachParentActor()->GetRootComponent());
 	if (!Root) { return; }
-	Constraint->SetConstrainedComponents(Root, NAME_None, Cast<UPrimitiveComponent>(Wheel), NAME_None);
-	WheelConstraint->SetConstrainedComponents(Root, NAME_None, Cast<UPrimitiveComponent>(Axie), NAME_None);
-	UE_LOG(LogTemp, Warning, TEXT("NotNULL %s"), *GetAttachParentActor()->GetName());
+	Constraint->SetConstrainedComponents(Root, NAME_None, Cast<UPrimitiveComponent>(Axie), NAME_None);
+	WheelConstraint->SetConstrainedComponents(Cast<UPrimitiveComponent>(Axie), NAME_None, Cast<UPrimitiveComponent>(Wheel), NAME_None);
+	//UE_LOG(LogTemp, Warning, TEXT("NotNULL %s"), *GetAttachParentActor()->GetName());
 }
 
 // Called every frame
@@ -49,4 +49,10 @@ void ASprungWheel::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void ASprungWheel::AddDrivingForce(float ForceMagnitude)
+{
+	Wheel->AddForce(Axie->GetForwardVector() * ForceMagnitude);
+}
+
 

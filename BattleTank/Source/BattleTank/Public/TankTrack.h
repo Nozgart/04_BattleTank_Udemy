@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrack.generated.h"
 
+class ASprungWheel;
+
 /**
  * 
  */
@@ -23,20 +25,17 @@ public:
 	UFUNCTION(BluePrintCallable, Category = "Input")
 	void SetThrottle(float Throttle);
 
-	void DriveTrack();
+	void DriveTrack(float CurrentThrottle);
 
 	UPROPERTY(EditDefaultsOnly)
-	float TrackMaxDrivingForce = 400000;
+	float TrackMaxDrivingForce = 4000000;
 	
 	float fDeltaTime;
 
 private:
 
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	TArray<USceneComponent*> GetWheels() const;
 
-	void ApplySidewayForce();
-
-	float CurrentThrottle = 0.f;
+	//TArray<ASprungWheel*> GetWheels() const;
 };
 

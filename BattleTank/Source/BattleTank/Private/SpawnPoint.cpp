@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpawnPoint.h"
+#include "SprungWheel.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,12 +24,11 @@ void USpawnPoint::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	auto NewActor = GetWorld()->SpawnActorDeferred<AActor>(ActorToSpawn, this->GetComponentTransform());
+	NewActor = GetWorld()->SpawnActorDeferred<AActor>(ActorToSpawn, this->GetComponentTransform());
 	if (!NewActor) { return; }
 
 	NewActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
 	UGameplayStatics::FinishSpawningActor(NewActor, this->GetComponentTransform());
-	
 }
 
 
@@ -39,4 +39,10 @@ void USpawnPoint::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
 	// ...
 }
+
+ASprungWheel* USpawnPoint::GetSpawnedWheel()
+{	
+	return Cast<ASprungWheel>(NewActor);
+}
+
 

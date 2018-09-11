@@ -28,6 +28,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void AddDrivingForce(float ForceMagnitude);
+
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Setup")
@@ -42,5 +44,4 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Setup")
 		UPhysicsConstraintComponent * WheelConstraint;
 
-	
 };
