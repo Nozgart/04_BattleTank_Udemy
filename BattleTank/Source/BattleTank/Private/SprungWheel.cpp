@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SprungWheel.h"
+#include "Engine/World.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 
@@ -8,7 +10,8 @@
 ASprungWheel::ASprungWheel()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = TG_PostPhysics;
 
 	Constraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Constraint"));
 	SetRootComponent(Constraint);
@@ -29,8 +32,15 @@ void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Wheel->SetNotifyRigidBodyCollision(true);
+	Wheel->OnComponentHit.AddDynamic(this, &ASprungWheel::OnHit);
 	SetupConstraint();
-	
+}
+
+void ASprungWheel::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	AddDrivingForce();
+	UE_LOG(LogTemp, Warning, TEXT("Hit on %f"), GetWorld()->GetTimeSeconds());
 }
 
 void ASprungWheel::SetupConstraint()
@@ -47,12 +57,23 @@ void ASprungWheel::SetupConstraint()
 void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (GetWorld()->TickGroup == TG_PostPhysics)
+	{
+		TotalDrivingForcePerFrame = 0;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Tick on %f"), GetWorld()->GetTimeSeconds());
+}
 
+void ASprungWheel::AddDrivingForce()
+{
+	Wheel->AddForce(Axie->GetForwardVector() * TotalDrivingForcePerFrame);
 }
 
 void ASprungWheel::AddDrivingForce(float ForceMagnitude)
 {
-	Wheel->AddForce(Axie->GetForwardVector() * ForceMagnitude);
+	TotalDrivingForcePerFrame += ForceMagnitude;
 }
+
+
 
 
